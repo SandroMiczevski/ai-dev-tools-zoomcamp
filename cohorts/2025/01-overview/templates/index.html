@@ -1,0 +1,20 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Todos</title>
+    {% for css in assets_css %}
+    <link rel="stylesheet" href="{% static css %}">
+    {% endfor %}
+  </head>
+  <body>
+    <div id="root"></div>
+
+    {% comment %} Include JS bundles produced by Vite build {% endcomment %}
+    {% for js in assets_js %}
+    <script type="module" src="{% static js %}"></script>
+    {% endfor %}
+  </body>
+</html>
