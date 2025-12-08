@@ -14,28 +14,19 @@ Total: **37 test suites with 100+ individual test cases**
 
 ## Quick Test Commands
 
-### Run All Tests
+### Run All Tests (Both Backend and Frontend)
 ```bash
-# Backend
-cd backend && npm test
-
-# Frontend
-cd frontend && npm test
-
-# Both
-cd backend && npm test && cd ../frontend && npm test
+npm test
 ```
 
-### Run Specific Test Suites
+### Run Backend Tests Only
 ```bash
-# Backend Integration Tests
-cd backend && npm run test:integration
+npm run test:backend
+```
 
-# Backend Unit Tests
-cd backend && npm run test:unit
-
-# Frontend Component Tests
-cd frontend && npm test
+### Run Frontend Tests Only
+```bash
+npm run test:frontend
 ```
 
 ### Development Testing

@@ -34,20 +34,39 @@ cp .env.example .env.local
 
 ## 🚀 Running the Application
 
-### Start Backend
+### Start Both Services (Recommended)
 ```bash
-cd backend
 npm run dev
 ```
 
-Terminal output should show:
-```
-Server running on port 5000
-```
+This runs both backend and frontend in a single terminal window. You'll see output from both services.
 
-### Start Frontend (in another terminal)
+Open `http://localhost:3000` in your browser.
+
+### Start Individual Services
+
+**Backend only:**
 ```bash
+npm run dev:backend
+```
+Runs on `http://localhost:5000`
+
+**Frontend only:**
+```bash
+npm run dev:frontend
+```
+Runs on `http://localhost:3000`
+
+### Start in Separate Terminals (Alternative)
+```bash
+# Terminal 1: Backend
+cd backend
+npm run dev
+
+# Terminal 2: Frontend
 cd frontend
+npm run dev
+```
 npm run dev
 ```
 

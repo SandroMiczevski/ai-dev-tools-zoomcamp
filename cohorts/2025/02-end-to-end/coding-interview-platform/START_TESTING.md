@@ -170,23 +170,17 @@ Frontend Coverage:    80%
 ## ⚡ Quick Start
 
 ```bash
-# 1. Install dependencies
-cd backend && npm install
-cd ../frontend && npm install
+# 1. Install all dependencies
+npm run install:all
 
-# 2. Run backend tests
-cd backend && npm test
+# 2. Run both backend and frontend
+npm run dev
 
-# 3. Run frontend tests
-cd frontend && npm test
-
-# 4. Run application
-cd backend && npm run dev    # Terminal 1
-cd frontend && npm run dev   # Terminal 2
-
-# 5. Open browser
+# 3. Open browser
 http://localhost:3000
 ```
+
+**That's it!** Both services will run in one terminal.
 
 ---
 

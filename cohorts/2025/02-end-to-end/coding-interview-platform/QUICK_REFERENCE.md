@@ -4,17 +4,14 @@
 
 ### Setup
 ```bash
-cd backend && npm install
-cd ../frontend && npm install
+npm run install:all    # Install dependencies for all packages
 ```
 
 ### Development
 ```bash
-# Terminal 1: Backend (port 5000)
-cd backend && npm run dev
-
-# Terminal 2: Frontend (port 3000)
-cd frontend && npm run dev
+npm run dev            # Both backend & frontend (recommended!)
+npm run dev:backend    # Backend only
+npm run dev:frontend   # Frontend only
 ```
 
 ### Testing - Backend

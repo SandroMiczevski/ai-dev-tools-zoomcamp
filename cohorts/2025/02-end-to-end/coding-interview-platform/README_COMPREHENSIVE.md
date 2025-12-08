@@ -185,21 +185,29 @@ coding-interview-platform/
 
 ### Development Mode
 
+#### Both Services (Using Concurrently)
+```bash
+npm run dev
+```
+Runs both backend (`http://localhost:5000`) and frontend (`http://localhost:3000`) in one terminal.
+
 #### Backend Only
 ```bash
-cd backend
-npm run dev
+npm run dev:backend
+# or
+cd backend && npm run dev
 ```
 Runs on `http://localhost:5000`
 
 #### Frontend Only
 ```bash
-cd frontend
-npm run dev
+npm run dev:frontend
+# or
+cd frontend && npm run dev
 ```
 Runs on `http://localhost:3000`
 
-#### Both Services
+#### Both Services (Separate Terminals)
 ```bash
 # Terminal 1
 cd backend && npm run dev
