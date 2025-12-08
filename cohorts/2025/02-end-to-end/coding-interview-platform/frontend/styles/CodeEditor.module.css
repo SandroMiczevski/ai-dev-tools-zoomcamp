@@ -101,8 +101,53 @@
 
 .highlight code {
   background: transparent;
-  color: #d4d4d4;
+  color: transparent;
   padding: 0;
+}
+
+/* Syntax highlighting colors for better visibility */
+.highlight :global(.hljs-keyword) {
+  color: #c678dd;
+}
+
+.highlight :global(.hljs-literal) {
+  color: #56b6c2;
+}
+
+.highlight :global(.hljs-string) {
+  color: #98c379;
+}
+
+.highlight :global(.hljs-number) {
+  color: #d19a66;
+}
+
+.highlight :global(.hljs-function) {
+  color: #61afef;
+}
+
+.highlight :global(.hljs-attr) {
+  color: #e06c75;
+}
+
+.highlight :global(.hljs-title) {
+  color: #61afef;
+}
+
+.highlight :global(.hljs-variable) {
+  color: #e06c75;
+}
+
+.highlight :global(.hljs-comment) {
+  color: #5c6370;
+}
+
+.highlight :global(.hljs-meta) {
+  color: #7d8590;
+}
+
+.highlight :global(.hljs-operator) {
+  color: #56b6c2;
 }
 
 .textarea {

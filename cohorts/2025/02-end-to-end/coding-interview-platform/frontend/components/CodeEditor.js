@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import hljs from 'highlight.js';
 import 'highlight.js/styles/atom-one-dark.css';
+import { highlightCode, getSupportedLanguages, getLanguageConfig } from '../utils/syntaxHighlighting';
 import styles from '../styles/CodeEditor.module.css';
 
 const CodeEditor = ({ code, onCodeChange, language, onLanguageChange, onExecute }) => {
@@ -9,10 +9,7 @@ const CodeEditor = ({ code, onCodeChange, language, onLanguageChange, onExecute 
 
   useEffect(() => {
     if (highlightRef.current && code) {
-      highlightRef.current.innerHTML = hljs.highlight(code, {
-        language: language,
-        ignoreIllegals: true,
-      }).value;
+      highlightRef.current.innerHTML = highlightCode(code, language);
     }
   }, [code, language]);
 
@@ -27,17 +24,7 @@ const CodeEditor = ({ code, onCodeChange, language, onLanguageChange, onExecute 
     onCodeChange(e.target.value);
   };
 
-  const languages = [
-    'javascript',
-    'python',
-    'java',
-    'cpp',
-    'csharp',
-    'ruby',
-    'go',
-    'rust',
-    'php',
-  ];
+  const languages = getSupportedLanguages();
 
   return (
     <div className={styles.container}>
@@ -50,8 +37,8 @@ const CodeEditor = ({ code, onCodeChange, language, onLanguageChange, onExecute 
             className={styles.languageSelect}
           >
             {languages.map((lang) => (
-              <option key={lang} value={lang}>
-                {lang.charAt(0).toUpperCase() + lang.slice(1)}
+              <option key={lang.id} value={lang.id}>
+                {lang.icon} {lang.name}
               </option>
             ))}
           </select>
