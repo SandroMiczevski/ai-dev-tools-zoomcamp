@@ -1,10 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import io from 'socket.io-client';
-import axios from 'axios';
 import CodeEditor from '../../components/CodeEditor';
 import OutputPanel from '../../components/OutputPanel';
 import Participants from '../../components/Participants';
+import {
+  executeCodeBrowser,
+  initializePythonRuntime,
+  getBrowserSupportedLanguages,
+  validateBrowserCode,
+  isCodeEmpty,
+  formatBrowserOutput,
+} from '../../utils/wasmExecution';
 import styles from '../../styles/Interview.module.css';
 
 const Interview = () => {
@@ -21,6 +28,15 @@ const Interview = () => {
   const socketRef = useRef(null);
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+  // Initialize Python runtime on component mount
+  useEffect(() => {
+    initializePythonRuntime().then((success) => {
+      if (!success) {
+        console.warn('Python runtime not available - Python execution may be limited');
+      }
+    });
+  }, []);
 
   useEffect(() => {
     if (!sessionId) return;
@@ -98,57 +114,52 @@ const Interview = () => {
   };
 
   const executeCode = async () => {
+    // Validate code
+    if (isCodeEmpty(code)) {
+      setError('Please write some code before executing');
+      return;
+    }
+
     setIsLoading(true);
     setError('');
     setOutput('');
 
     try {
-      const response = await fetch('https://emkc.org/api/v2/piston/execute', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          language: language === 'csharp' ? 'csharp' : language === 'cpp' ? 'cpp' : language,
-          version: '*',
-          files: [
-            {
-              name: `main.${getFileExtension(language)}`,
-              content: code,
-            },
-          ],
-        }),
-      });
+      // Validate code for warnings
+      const validation = validateBrowserCode(code, language);
+      
+      // Execute code in browser (WASM/Worker)
+      const result = await executeCodeBrowser(code, language, 5000);
 
-      const result = await response.json();
-
-      if (result.run && result.run.output) {
-        setOutput(result.run.output);
-      } else if (result.run && result.run.stderr) {
-        setError(result.run.stderr);
+      if (result.success) {
+        setOutput(formatBrowserOutput(result.output));
+        setError('');
       } else {
-        setOutput('Code executed successfully with no output');
+        setError(result.error);
+        setOutput(formatBrowserOutput(result.output || ''));
       }
+
+      // Show warnings if any
+      if (validation.warnings && validation.warnings.length > 0) {
+        console.warn('Code warnings:', validation.warnings);
+      }
+
+      // Broadcast execution result to participants
+      if (socketRef.current) {
+        socketRef.current.emit('code_execution_result', {
+          sessionId,
+          language,
+          success: result.success,
+          output: result.output,
+          error: result.error,
+        });
+      }
+
     } catch (err) {
       setError(`Execution error: ${err.message}`);
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const getFileExtension = (lang) => {
-    const extensions = {
-      javascript: 'js',
-      python: 'py',
-      java: 'java',
-      cpp: 'cpp',
-      csharp: 'cs',
-      ruby: 'rb',
-      go: 'go',
-      rust: 'rs',
-      php: 'php',
-    };
-    return extensions[lang] || 'txt';
   };
 
   const copyShareLink = () => {

@@ -4,6 +4,7 @@ const socketIo = require('socket.io');
 const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
 const NodeCache = require('node-cache');
+const { executeCode, getSupportedLanguages, validateCodeSecurity } = require('./services/codeExecutor');
 
 const app = express();
 const server = http.createServer(app);
@@ -59,6 +60,47 @@ app.get('/api/sessions/:sessionId', (req, res) => {
   }
 
   res.json(sessionData);
+});
+
+// Execute code endpoint
+app.post('/api/execute', async (req, res) => {
+  const { code, language } = req.body;
+
+  // Validate request
+  if (!code || !language) {
+    return res.status(400).json({
+      success: false,
+      error: 'Code and language are required',
+      output: '',
+    });
+  }
+
+  try {
+    // Validate code for security issues
+    const securityCheck = validateCodeSecurity(code);
+    
+    // Execute the code
+    const result = await executeCode(code, language);
+
+    // Add security warnings if any
+    if (securityCheck.warnings.length > 0) {
+      result.warnings = securityCheck.warnings;
+    }
+
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: `Server error: ${err.message}`,
+      output: '',
+    });
+  }
+});
+
+// Get supported languages endpoint
+app.get('/api/languages', (req, res) => {
+  const languages = getSupportedLanguages();
+  res.json({ languages });
 });
 
 // WebSocket connections
